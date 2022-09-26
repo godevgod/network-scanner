@@ -35,7 +35,7 @@ func main() {
 }
 ```
 
-#### Scan port 80 in a range of IP addresses
+#### Scan port 4028 in a range of IP addresses
 
 ```go
 package main
@@ -44,19 +44,66 @@ package main
 import "github.com/ivopetiz/portscanner"
 
 // Main function.
+package main
+
+// imports fmt lib and portscanner lib.
+import (
+	"fmt"
+	"log"
+	"net"
+
+	"github.com/ivopetiz/portscanner"
+)
+
+// Main function.
 func main() {
-	
+
 	// ports is a slice of ports to test.
-	ports := []string{"80"}
+	ports := []string{"4028"}
+
+	GetLocalIP := GetOutboundIP().String()
+
+	//fmt.Println(GetLocalIP[:len(GetLocalIP)-4])
+
+	var TrimPos int
+	_ = TrimPos
+	for i, v := range GetLocalIP {
+		if v == '.' {
+			TrimPos = i
+			//fmt.Print("TrimPos ", TrimPos, "\n")
+			continue
+		}
+	}
+	fmt.Println(GetLocalIP[:len(GetLocalIP)-(len(GetLocalIP)-TrimPos)])
+
+	fmt.Println(GetLocalIP)
+
+	fmt.Printf("GetLocalIP %T\n", GetLocalIP)
 
 	// IP sequence is defined by a '-' between first and last IP address .
-	ips_sequence := []string{"192.168.1.1-254"}
+
+	//ips_sequence := []string{"192.168.88.1-254"}
+	Ip1_254 := GetLocalIP[:len(GetLocalIP)-(len(GetLocalIP)-TrimPos)]
+	Ip1_254 = Ip1_254 + ".1-254"
+	ips_sequence := []string{Ip1_254}
 
 	// results returns a map with open ports for each IP address.
-	results := portscanner.IPScanner(ips_list, ports, true)
+	results := portscanner.IPScanner(ips_sequence, ports, true)
 	// Once IPScanner has true for print_results, lib will present
 	// results in CL with a nice presentation.
+	fmt.Println(results)
+	//fmt.Println(GetOutboundIP())
 }
+func GetOutboundIP() net.IP {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP
+}
+
 ```
 
 ## App
