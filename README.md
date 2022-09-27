@@ -41,12 +41,6 @@ func main() {
 package main
 
 // imports fmt lib and portscanner lib.
-import "github.com/ivopetiz/portscanner"
-
-// Main function.
-package main
-
-// imports fmt lib and portscanner lib.
 import (
 	"fmt"
 	"log"
